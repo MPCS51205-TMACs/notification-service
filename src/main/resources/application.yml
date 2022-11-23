@@ -1,0 +1,8 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    username: notification-service
+    password: notification-service
+    url: jdbc:postgresql://localhost:5432/notification
