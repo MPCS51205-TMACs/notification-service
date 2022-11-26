@@ -6,3 +6,6 @@ spring:
     username: notification-service
     password: notification-service
     url: jdbc:postgresql://localhost:5432/notification
+  rabbitmq:
+    template:
+      exchange-create: user.create

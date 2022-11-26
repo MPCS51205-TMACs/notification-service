@@ -8,3 +8,10 @@ services:
       POSTGRES_USER: notification-service
       POSTGRES_PASSWORD: notification-service
       POSTGRES_DB: notification
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"

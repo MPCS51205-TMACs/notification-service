@@ -1,15 +1,10 @@
 package com.mpcs51205.notificationservice.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import java.io.Serializable
 import java.util.*
 import javax.persistence.*
 
-/**
- * -userId: int
--name: String
--email: String
--receiveAlerts: Boolean
- */
 
 @Entity
 @Table(indexes = [Index(columnList = "id")])
@@ -26,4 +21,28 @@ class UserProfile: Serializable {
 
     @Column
     var receiveAlerts: Boolean = true
+
+    constructor(id: UUID, name: String, email: String) {
+        this.id = id
+        this.name = name
+        this.email = email
+        this.receiveAlerts = true
+    }
 }
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+class UserProfileUpdate: Serializable {
+    var id: UUID? = null
+    var name: String? = null
+    var email: String? = null
+    var receiveAlerts: Boolean? = null
+
+    fun update(userProfile: UserProfile): UserProfileUpdateEvent {
+        userProfile.name = this.name ?: userProfile.name
+        userProfile.email = this.email ?: userProfile.email
+        userProfile.receiveAlerts = this.receiveAlerts ?: userProfile.receiveAlerts
+        return UserProfileUpdateEvent(userProfile.id!!, this)
+    }
+}
+
+class UserProfileUpdateEvent(val userId: UUID, val update: UserProfileUpdate): Serializable

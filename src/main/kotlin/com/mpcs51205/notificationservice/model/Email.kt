@@ -63,5 +63,4 @@ class Email: Serializable {
     // change to enum?
     @Column(nullable = false)
     lateinit var templateType: String
-
 }

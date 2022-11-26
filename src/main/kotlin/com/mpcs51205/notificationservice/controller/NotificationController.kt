@@ -1,6 +1,7 @@
 package com.mpcs51205.notificationservice.controller
 
 import com.mpcs51205.notificationservice.model.Email
+import com.mpcs51205.notificationservice.model.User
 import com.mpcs51205.notificationservice.model.UserProfile
 import com.mpcs51205.notificationservice.service.NotificationService
 import com.mpcs51205.notificationservice.repository.UserProfileRepository
@@ -21,6 +22,9 @@ class NotificationController(val notificationService: NotificationService) {
     @PostMapping("/user-profile")
     fun createUserProfile(@RequestBody userProfile: UserProfile) = notificationService.createUserProfile(userProfile)
 
+    @PostMapping("/user")
+    fun triggerUserCreationEvent(@RequestBody user: User) =notificationService.createUserEvent(user)
+
     // #todo: add update user-profile
 
     @GetMapping("/email/{emailId}")
@@ -32,6 +36,13 @@ class NotificationController(val notificationService: NotificationService) {
     @PostMapping("/email")
     fun createEmail(@RequestBody email: Email) = notificationService.createEmail(email)
 
-    // level 2: #todo: add additional queries for emails by sender, and receiver emails/ids
+    @GetMapping("/email/inbox/{userId}")
+    fun getEmailsByReceiverId(@PathVariable userId:UUID): Array<Email> = notificationService.getEmailsByReceiverId(userId)
+
+    @GetMapping("/email/outbox/{userId}")
+    fun getEmailsBySenderId(@PathVariable userId:UUID): Array<Email> = notificationService.getEmailsBySenderId(userId)
+
+    @GetMapping("/email/template/{templateType}")
+    fun getEmailsByTemplate(@PathVariable templateType: String): Array<Email> = notificationService.getEmailsByTemplateType(templateType)
 
 }
