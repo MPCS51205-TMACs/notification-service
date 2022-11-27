@@ -1,5 +1,6 @@
 package com.mpcs51205.notificationservice.controller
 
+import com.mpcs51205.notificationservice.model.AuctionStartOrEndSoon
 import com.mpcs51205.notificationservice.model.Email
 import com.mpcs51205.notificationservice.model.User
 import com.mpcs51205.notificationservice.model.UserProfile
@@ -24,7 +25,7 @@ class NotificationController(val notificationService: NotificationService, val e
     fun createUserProfile(@RequestBody userProfile: UserProfile) = notificationService.createUserProfile(userProfile)
 
     @PostMapping("/user")
-    fun triggerUserCreationEvent(@RequestBody user: User) =eventSenderService.createUserEvent(user)
+    fun triggerUserCreationEvent(@RequestBody auctionStart: AuctionStartOrEndSoon) =eventSenderService.createUserEvent(auctionStart)
 
     // #todo: add update user-profile
 

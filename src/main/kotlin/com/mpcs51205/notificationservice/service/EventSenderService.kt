@@ -3,6 +3,7 @@ package com.mpcs51205.notificationservice.service
 import com.mpcs51205.notificationservice.event.RabbitPublisher
 import com.mpcs51205.notificationservice.event.RabbitSubscriber
 import com.mpcs51205.notificationservice.exception.*
+import com.mpcs51205.notificationservice.model.AuctionStartOrEndSoon
 import com.mpcs51205.notificationservice.model.Email
 import com.mpcs51205.notificationservice.model.User
 import com.mpcs51205.notificationservice.model.UserProfile
@@ -21,17 +22,17 @@ class EventSenderService(
     val rabbitSubscriber: RabbitSubscriber
 ) {
 
-    fun createUserEvent(user: User): User {
+    fun createUserEvent(auctionStart: AuctionStartOrEndSoon): AuctionStartOrEndSoon {
         //rabbitSubscriber.sendCreateEvent(user)
-        rabbitSubscriber.sendUpdateEvent(user)
-        rabbitSubscriber.sendDeleteEvent(user)
-        rabbitSubscriber.sendActivationEvent(user)
-        rabbitSubscriber.sendWatchlistEvent(user)
-        rabbitSubscriber.sendAuctionStartSoonEvent(user)
-        rabbitSubscriber.sendAuctionEndSoonEvent(user)
-        rabbitSubscriber.sendAuctionNewHighBidEvent(user)
-        rabbitSubscriber.sendAuctionEndEvent(user)
-        return user
+       // rabbitSubscriber.sendUpdateEvent(user)
+        //rabbitSubscriber.sendDeleteEvent(user)
+       // rabbitSubscriber.sendActivationEvent(user)
+       // rabbitSubscriber.sendWatchlistEvent(user)
+       // rabbitSubscriber.sendAuctionStartSoonEvent(user)
+        rabbitSubscriber.sendAuctionEndSoonEvent(auctionStart)
+       // rabbitSubscriber.sendAuctionNewHighBidEvent(user)
+       // rabbitSubscriber.sendAuctionEndEvent(user)
+        return auctionStart
     }
 
 }

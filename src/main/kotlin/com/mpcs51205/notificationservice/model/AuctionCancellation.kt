@@ -1,5 +1,7 @@
 package com.mpcs51205.notificationservice.model
 
-class AuctionCancellation {
+import java.io.Serializable
+
+class AuctionCancellation: Serializable {
     var timeReceived: String? = null
 }

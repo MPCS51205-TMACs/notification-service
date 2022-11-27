@@ -1,7 +1,6 @@
 package com.mpcs51205.notificationservice.model
 
-import java.text.Bidi
-import java.util.*
+import java.io.Serializable
 
 /**
  * "SentStartSoonAlert": bool,
@@ -19,7 +18,7 @@ import java.util.*
 }
 
  */
-class Auction {
+class AuctionEnd: Serializable {
     lateinit var Item: AuctionItem
     var Bids: List<AuctionItem> = listOf()
     lateinit var Cancellation: AuctionCancellation

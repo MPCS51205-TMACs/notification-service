@@ -1,6 +1,8 @@
 package com.mpcs51205.notificationservice.model
 
-class AuctionStartOrEndSoon {
+import java.io.Serializable
+
+class AuctionStartOrEndSoon: Serializable {
     lateinit var itemid: String
     lateinit var selleruserid: String
     lateinit var starttime: String

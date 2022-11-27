@@ -1,6 +1,8 @@
 package com.mpcs51205.notificationservice.model
 
-class AuctionNewHighBid {
+import java.io.Serializable
+
+class AuctionNewHighBid: Serializable {
     lateinit var ItemId: String
     lateinit var SellerUserId: String
     lateinit var FormerTopBidder: String
