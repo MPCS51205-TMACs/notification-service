@@ -1,6 +1,7 @@
 package com.mpcs51205.notificationservice.service
 
 import com.mpcs51205.notificationservice.event.RabbitPublisher
+import com.mpcs51205.notificationservice.event.RabbitSubscriber
 import com.mpcs51205.notificationservice.exception.*
 import com.mpcs51205.notificationservice.model.Email
 import com.mpcs51205.notificationservice.model.User
@@ -15,19 +16,13 @@ import java.util.*
 @Service
 class NotificationService(
     val userProfileRepository: UserProfileRepository,
-    val emailRepository: EmailRepository,
-    val rabbitPublisher: RabbitPublisher
+    val emailRepository: EmailRepository
 ) {
     fun getUserProfileById(userId: UUID): UserProfile = userProfileRepository.findByIdOrNull(userId) ?: throw ResourceDoesNotExistException()
 
     fun createUserProfile(userProfile: UserProfile): UserProfile {
         saveUserProfile(userProfile)
         return userProfile
-    }
-
-    fun createUserEvent(user: User): User {
-        rabbitPublisher.sendCreateEvent(user)
-        return user
     }
 
     fun saveUserProfile(userProfile: UserProfile) {

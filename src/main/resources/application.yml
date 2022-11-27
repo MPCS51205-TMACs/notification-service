@@ -8,4 +8,12 @@ spring:
     url: jdbc:postgresql://localhost:5432/notification
   rabbitmq:
     template:
-      exchange-create: user.create
+      exchange-user-create: user.create
+      exchange-user-delete: user.delete
+      exchange-user-update: user.update
+      exchange-user-activation: user.activation
+      exchange-watchlist-match: watchlist.match
+      exchange-auction-startstoon: auction.startsoon
+      exchange-auction-endsoon: auction.endsoon
+      exchange-auction-end: auction.end
+      exchange-auction-new-high-bid: auction.new-high-bid

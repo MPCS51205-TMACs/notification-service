@@ -6,12 +6,13 @@ import com.mpcs51205.notificationservice.model.UserProfile
 import com.mpcs51205.notificationservice.service.NotificationService
 import com.mpcs51205.notificationservice.repository.UserProfileRepository
 import com.mpcs51205.notificationservice.repository.EmailRepository
+import com.mpcs51205.notificationservice.service.EventSenderService
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
 @RequestMapping("/notification")
-class NotificationController(val notificationService: NotificationService) {
+class NotificationController(val notificationService: NotificationService, val eventSenderService: EventSenderService) {
     // TODO: endpoint permissions
     @GetMapping("/user-profile/{userId}")
     fun getUserProfile(@PathVariable userId:UUID): UserProfile = notificationService.getUserProfileById(userId)
@@ -23,7 +24,7 @@ class NotificationController(val notificationService: NotificationService) {
     fun createUserProfile(@RequestBody userProfile: UserProfile) = notificationService.createUserProfile(userProfile)
 
     @PostMapping("/user")
-    fun triggerUserCreationEvent(@RequestBody user: User) =notificationService.createUserEvent(user)
+    fun triggerUserCreationEvent(@RequestBody user: User) =eventSenderService.createUserEvent(user)
 
     // #todo: add update user-profile
 
