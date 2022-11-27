@@ -13,17 +13,24 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
 
+/**
+ * for testing purposes only!!
+ */
 @Service
 class EventSenderService(
     val rabbitSubscriber: RabbitSubscriber
 ) {
 
-
     fun createUserEvent(user: User): User {
-        rabbitSubscriber.sendCreateEvent(user)
+        //rabbitSubscriber.sendCreateEvent(user)
         rabbitSubscriber.sendUpdateEvent(user)
         rabbitSubscriber.sendDeleteEvent(user)
         rabbitSubscriber.sendActivationEvent(user)
+        rabbitSubscriber.sendWatchlistEvent(user)
+        rabbitSubscriber.sendAuctionStartSoonEvent(user)
+        rabbitSubscriber.sendAuctionEndSoonEvent(user)
+        rabbitSubscriber.sendAuctionNewHighBidEvent(user)
+        rabbitSubscriber.sendAuctionEndEvent(user)
         return user
     }
 

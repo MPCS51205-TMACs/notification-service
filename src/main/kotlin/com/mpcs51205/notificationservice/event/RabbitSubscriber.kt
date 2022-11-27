@@ -3,13 +3,10 @@ package com.mpcs51205.notificationservice.event
 import com.mpcs51205.notificationservice.model.User
 import com.mpcs51205.notificationservice.model.UserProfile
 import com.mpcs51205.notificationservice.service.NotificationService
-import org.springframework.amqp.core.Binding
-import org.springframework.amqp.core.BindingBuilder
-import org.springframework.amqp.core.FanoutExchange
-import org.springframework.amqp.core.Queue
 import org.springframework.amqp.rabbit.annotation.RabbitHandler
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import com.mpcs51205.notificationservice.event.RabbitPublisher
+import org.springframework.amqp.core.*
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
 import org.springframework.amqp.support.converter.MessageConverter
@@ -25,7 +22,6 @@ import java.io.Serializable
 
 @Component
 class RabbitSubscriber(val notificationService: NotificationService) {
-    // create user.create events for testing
     /**
     exchange-user-create: user.create
     exchange-user-delete: user.delete
@@ -41,6 +37,8 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     @Autowired
     lateinit var template: RabbitTemplate
 
+    var routingKey = "notification-service"
+
     @Value("\${spring.rabbitmq.template.exchange-user-create}")
     lateinit var userCreateExchange: String
 
@@ -53,22 +51,20 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     @Value("\${spring.rabbitmq.template.exchange-user-activation}")
     lateinit var userActivationExchange: String
 
-    var routingKey = "notification-service"
+    @Value("\${spring.rabbitmq.template.exchange-watchlist-match}")
+    lateinit var watchlistMatchExchange: String
 
-    //@Value("\${spring.rabbitmq.template.exchange-watchlist-match}")
-    //lateinit var watchlistMatchExchange: String
+    @Value("\${spring.rabbitmq.template.exchange-auction-startsoon}")
+    lateinit var auctionStartSoonExchange: String
 
-    //@Value("\${spring.rabbitmq.template.exchange-auction-startsoon}")
-    //lateinit var auctionStartSoonExchange: String
+    @Value("\${spring.rabbitmq.template.exchange-auction-endsoon}")
+    lateinit var auctionEndSoonExchange: String
 
-    //@Value("\${spring.rabbitmq.template.exchange-auction-endsoon}")
-    //lateinit var auctionEndSoonExchange: String
+    @Value("\${spring.rabbitmq.template.exchange-auction-new-high-bid}")
+    lateinit var auctionNewHighBidExchange: String
 
-    //@Value("\${spring.rabbitmq.template.exchange-auction-new-high-bid}")
-    //lateinit var auctionNewHighBidExchange: String
-
-    //@Value("\${spring.rabbitmq.template.exchange-auction-end}")
-    //lateinit var auctionEndExchange: String
+    @Value("\${spring.rabbitmq.template.exchange-auction-end}")
+    lateinit var auctionEndExchange: String
 
 
     @Bean
@@ -79,6 +75,21 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     fun userActivationExchange() = FanoutExchange(userActivationExchange, true, false)
     @Bean
     fun userDeleteExchange() = FanoutExchange(userDeleteExchange, true, false)
+
+    @Bean
+    fun watchlistMatchExchange() = DirectExchange(watchlistMatchExchange, true, false)
+
+    @Bean
+    fun auctionStartSoonExchange() = DirectExchange(auctionStartSoonExchange, true, false)
+
+    @Bean
+    fun auctionEndSoonExchange() = DirectExchange(auctionEndSoonExchange, true, false)
+
+    @Bean
+    fun auctionNewHighBidExchange() = DirectExchange(auctionNewHighBidExchange, true, false)
+
+    @Bean
+    fun auctionEndExchange() = FanoutExchange(auctionEndExchange, true, false)
 
     @Bean
     fun userCreateQueue(): Queue = Queue("notification-service:user.create",true)
@@ -101,14 +112,38 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     @Bean
     open fun userActivationBinding(): Binding = Binding(userActivationQueue().name, Binding.DestinationType.QUEUE, userActivationExchange().name, routingKey, null)
 
-    // listen to user.create events
+    @Bean
+    fun watchlistMatchQueue(): Queue = Queue("watchlist.match",true)
+    @Bean
+    open fun watchlistMatchBinding(): Binding = Binding(watchlistMatchQueue().name, Binding.DestinationType.QUEUE, userActivationExchange().name, routingKey, null)
+
+    @Bean
+    fun auctionStartSoonQueue(): Queue = Queue("auction.startsoon",true)
+    @Bean
+    open fun auctionStartSoonBinding(): Binding = Binding(auctionStartSoonQueue().name, Binding.DestinationType.QUEUE, auctionStartSoonExchange().name, routingKey, null)
+
+    @Bean
+    fun auctionEndSoonQueue(): Queue = Queue("auction.endsoon",true)
+    @Bean
+    open fun auctionEndSoonBinding(): Binding = Binding(auctionEndSoonQueue().name, Binding.DestinationType.QUEUE, auctionEndSoonExchange().name, routingKey, null)
+
+    @Bean
+    fun auctionNewHighBidQueue(): Queue = Queue("auction.new-high-bid",true)
+    @Bean
+    open fun auctionNewHighBidBinding(): Binding = Binding(auctionNewHighBidQueue().name, Binding.DestinationType.QUEUE, auctionNewHighBidExchange().name, routingKey, null)
+
+    @Bean
+    fun auctionEndQueue(): Queue = Queue("notification-service:auction.end",true)
+    @Bean
+    open fun auctionEndBinding(): Binding = Binding(auctionEndQueue().name, Binding.DestinationType.QUEUE, auctionEndExchange().name, routingKey, null)
+
     @RabbitListener(queues = ["notification-service:user.create"])
     fun receiveUserCreate(user: User) {
         println("Receiving message create")
         val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
         if (userProfile != null) {
             // add exception handling here
-            notificationService.createUserProfile(userProfile))
+            notificationService.createUserProfile(userProfile)
         }
     }
 
@@ -140,6 +175,50 @@ class RabbitSubscriber(val notificationService: NotificationService) {
        // }
     }
 
+    @RabbitListener(queues = ["watchlist.match"])
+    fun receiveWatchlistMatch(user: User) {
+        println("Receiving watchlist Match")
+        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
+        //if (userProfile != null) {
+        //    notificationService.createUserProfile(userProfile)
+        // }
+    }
+
+    @RabbitListener(queues = ["auction.startsoon"])
+    fun receiveAuctionStartSoon(user: User) {
+        println("Receiving auction start soon")
+        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
+        //if (userProfile != null) {
+        //    notificationService.createUserProfile(userProfile)
+        // }
+    }
+
+    @RabbitListener(queues = ["auction.endsoon"])
+    fun receiveAuctionEndSoon(user: User) {
+        println("Receiving auction end soon")
+        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
+        //if (userProfile != null) {
+        //    notificationService.createUserProfile(userProfile)
+        // }
+    }
+
+    @RabbitListener(queues = ["auction.new-high-bid"])
+    fun receiveAuctionNewHighBid(user: User) {
+        println("Receiving auction new high bid")
+        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
+        //if (userProfile != null) {
+        //    notificationService.createUserProfile(userProfile)
+        // }
+    }
+
+    @RabbitListener(queues = ["notification-service:auction.end"])
+    fun receiveAuctionEnd(user: User) {
+        println("Receiving auction end")
+        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
+        //if (userProfile != null) {
+        //    notificationService.createUserProfile(userProfile)
+        // }
+    }
 
 
     // FOR TESTING
@@ -150,9 +229,18 @@ class RabbitSubscriber(val notificationService: NotificationService) {
 
     fun sendActivationEvent(user: User) = send(exchange = userActivationExchange, payload = user)
 
+    fun sendWatchlistEvent(user: User) = send(exchange = watchlistMatchExchange, payload = user)
+
+    fun sendAuctionStartSoonEvent(user: User) = send(exchange = auctionStartSoonExchange, payload = user)
+
+    fun sendAuctionEndSoonEvent(user: User) = send(exchange = auctionEndSoonExchange, payload = user)
+
+    fun sendAuctionNewHighBidEvent(user: User) = send(exchange = auctionNewHighBidExchange, payload = user)
+
+    fun sendAuctionEndEvent(user: User) = send(exchange = auctionEndExchange, payload = user)
 
     private fun send(exchange: String, payload: Serializable) {
-        template.convertAndSend(exchange, "notification-service:user.create", payload)
+        template.convertAndSend(exchange, routingKey, payload)
     }
 
 
