@@ -5,7 +5,7 @@ spring:
   datasource:
     username: notification-service
     password: notification-service
-    url: jdbc:postgresql://localhost:5432/notification
+    url: jdbc:postgresql://postgres-notification:5432/notification
   rabbitmq:
     template:
       exchange-user-create: user.create
@@ -17,3 +17,4 @@ spring:
       exchange-auction-endsoon: auction.endsoon
       exchange-auction-new-high-bid: auction.new-high-bid
       exchange-auction-end: auction.end
+    host: rabbitmq-server
