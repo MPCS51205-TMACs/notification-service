@@ -18,6 +18,8 @@
         <kotlin.version>1.6.21</kotlin.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- try adding start class to resolve main class err -->
+        <!-- <start-class>com.mpcs51205.notificationservice/NotificationServiceApplicationkt</start-class> -->
     </properties>
     <dependencies>
         <dependency>
@@ -29,7 +31,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
 
         <!--
         <dependency>
@@ -88,6 +89,14 @@
             <version>1.1.4-alpha.10</version>
         </dependency>
 
+        <!-- trying to fix docker errors, do I need this? -->
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
         <!--
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -98,6 +107,10 @@
     </dependencies>
 
     <build>
+        <!-- what is the significance of the final name in the build? -->
+        <finalName>notification-service</finalName>
+        <!-- try setting default goal as run -->
+        <defaultGoal>deploy</defaultGoal>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
@@ -116,23 +129,15 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
-
-
                 <configuration>
                     <args>
                         <arg>-Xjsr305=strict</arg>
                     </args>
-
-
                     <compilerPlugins>
                         <plugin>spring</plugin>
                         <plugin>jpa</plugin>
                     </compilerPlugins>
-
-
                 </configuration>
-
-
                 <dependencies>
                     <dependency>
                         <groupId>org.jetbrains.kotlin</groupId>

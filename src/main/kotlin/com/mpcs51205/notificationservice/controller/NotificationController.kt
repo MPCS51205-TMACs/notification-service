@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
-@RequestMapping("/notification")
+@RequestMapping("/api/v1/notification")
 class NotificationController(val notificationService: NotificationService, val eventSenderService: EventSenderService) {
     // TODO: endpoint permissions
     @GetMapping("/user-profile/{userId}")
