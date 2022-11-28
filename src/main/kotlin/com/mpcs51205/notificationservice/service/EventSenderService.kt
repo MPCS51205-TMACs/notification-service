@@ -19,7 +19,7 @@ import java.util.*
  */
 @Service
 class EventSenderService(
-    val rabbitSubscriber: RabbitSubscriber
+    //val rabbitSubscriber: RabbitSubscriber
 ) {
 
     fun createUserEvent(auctionStart: AuctionStartOrEndSoon): AuctionStartOrEndSoon {
@@ -29,7 +29,7 @@ class EventSenderService(
        // rabbitSubscriber.sendActivationEvent(user)
        // rabbitSubscriber.sendWatchlistEvent(user)
        // rabbitSubscriber.sendAuctionStartSoonEvent(user)
-        rabbitSubscriber.sendAuctionEndSoonEvent(auctionStart)
+        //rabbitSubscriber.sendAuctionEndSoonEvent(auctionStart)
        // rabbitSubscriber.sendAuctionNewHighBidEvent(user)
        // rabbitSubscriber.sendAuctionEndEvent(user)
         return auctionStart

@@ -18,3 +18,10 @@ spring:
       exchange-auction-new-high-bid: auction.new-high-bid
       exchange-auction-end: auction.end
     host: rabbitmq-server
+    listener:
+      direct:
+        retry:
+          enabled: false
+      fanout:
+        retry:
+          enabled: false

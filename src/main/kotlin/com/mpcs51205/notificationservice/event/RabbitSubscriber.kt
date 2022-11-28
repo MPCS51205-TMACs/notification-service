@@ -1,22 +1,22 @@
 package com.mpcs51205.notificationservice.event
 
-import com.mpcs51205.notificationservice.service.NotificationService
-import org.springframework.amqp.rabbit.annotation.RabbitHandler
-import org.springframework.amqp.rabbit.annotation.RabbitListener
-import com.mpcs51205.notificationservice.event.RabbitPublisher
 import com.mpcs51205.notificationservice.model.*
-import org.springframework.amqp.core.*
+import com.mpcs51205.notificationservice.service.NotificationService
+import org.springframework.amqp.core.Binding
+import org.springframework.amqp.core.DirectExchange
+import org.springframework.amqp.core.FanoutExchange
+import org.springframework.amqp.core.Queue
+import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
-import org.springframework.amqp.support.converter.MessageConverter
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 import java.io.Serializable
+import java.util.*
 
 
 @Component
@@ -33,6 +33,8 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     exchange-auction-new-high-bid: auction.new-high-bid
      **/
 
+    // previously was just autowired, but caused dependency cycle
+    @Lazy
     @Autowired
     lateinit var template: RabbitTemplate
 
@@ -75,8 +77,9 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     @Bean
     fun userDeleteExchange() = FanoutExchange(userDeleteExchange, true, false)
 
+    // change to fanout exchange for now to integrate w/ watchlist service
     @Bean
-    fun watchlistMatchExchange() = DirectExchange(watchlistMatchExchange, true, false)
+    fun watchlistMatchExchange() = FanoutExchange(watchlistMatchExchange, true, false)
 
     @Bean
     fun auctionStartSoonExchange() = DirectExchange(auctionStartSoonExchange, true, false)
@@ -141,7 +144,6 @@ class RabbitSubscriber(val notificationService: NotificationService) {
         println("Receiving message create")
         val userProfile = user.id?.let { user.name?.let { it1 -> user.email?.let { it2 -> UserProfile(it, it1, it2) } } }
         if (userProfile != null) {
-            // add exception handling here
             notificationService.createUserProfile(userProfile)
         }
     }
@@ -156,12 +158,9 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     }
 
     @RabbitListener(queues = ["notification-service:user.update"])
-    fun receiveUserUpdate(user: User) {
-        println("Receiving message user update")
-        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
-        //if (userProfile != null) {
-        //    notificationService.createUserProfile(userProfile)
-        //}
+    fun receiveUserUpdate(userUpdateEvent: UserUpdateEvent) {
+        println("Receiving message User Update")
+        notificationService.updateUserProfile(userUpdateEvent)
     }
 
     // add other events here
@@ -223,24 +222,21 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     // FOR TESTING
     fun sendCreateEvent(user: User) = send(exchange = userCreateExchange, payload = user)
     fun sendUpdateEvent(user: User) = send(exchange = userUpdateExchange, payload = user)
-
     fun sendDeleteEvent(user: User) = send(exchange = userDeleteExchange, payload = user)
-
     fun sendActivationEvent(user: User) = send(exchange = userActivationExchange, payload = user)
-
     fun sendWatchlistEvent(watchlistMatch: WatchlistMatch) = send(exchange = watchlistMatchExchange, payload = watchlistMatch)
-
     fun sendAuctionStartSoonEvent(auctionStart: AuctionStartOrEndSoon) = send(exchange = auctionStartSoonExchange, payload = auctionStart)
-
     fun sendAuctionEndSoonEvent(auctionEnd: AuctionStartOrEndSoon) = send(exchange = auctionEndSoonExchange, payload = auctionEnd)
-
     fun sendAuctionNewHighBidEvent(newHighBid: AuctionNewHighBid) = send(exchange = auctionNewHighBidExchange, payload = newHighBid)
-
     fun sendAuctionEndEvent(auctionEnd: AuctionEnd) = send(exchange = auctionEndExchange, payload = auctionEnd)
 
     private fun send(exchange: String, payload: Serializable) {
         template.convertAndSend(exchange, routingKey, payload)
     }
 
+    @Bean
+    open fun jsonMessageConverter(): Jackson2JsonMessageConverter {
+        return Jackson2JsonMessageConverter()
+    }
 
 }

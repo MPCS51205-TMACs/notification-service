@@ -11,7 +11,7 @@ import javax.persistence.*
 class UserProfile: Serializable {
     @Id
     @Column(nullable = false)
-    var id: UUID? = null
+    var id: UUID
 
     @Column(nullable = false)
     lateinit var name: String
@@ -37,11 +37,17 @@ class UserProfileUpdate: Serializable {
     var email: String? = null
     var receiveAlerts: Boolean? = null
 
-    fun update(userProfile: UserProfile): UserProfileUpdateEvent {
+    fun update(userProfile: User) {
         userProfile.name = this.name ?: userProfile.name
         userProfile.email = this.email ?: userProfile.email
-        userProfile.receiveAlerts = this.receiveAlerts ?: userProfile.receiveAlerts
-        return UserProfileUpdateEvent(userProfile.id!!, this)
+
+        if (userProfile.suspended.toString() == "true" || userProfile.active.toString() == "false"){
+            this.receiveAlerts = false
+        }
+        if (userProfile.suspended.toString() == "false" && userProfile.active.toString() == "true"){
+            this.receiveAlerts = false
+        }
+        return
     }
 }
 

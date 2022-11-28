@@ -3,9 +3,7 @@ package com.mpcs51205.notificationservice.service
 import com.mpcs51205.notificationservice.event.RabbitPublisher
 import com.mpcs51205.notificationservice.event.RabbitSubscriber
 import com.mpcs51205.notificationservice.exception.*
-import com.mpcs51205.notificationservice.model.Email
-import com.mpcs51205.notificationservice.model.User
-import com.mpcs51205.notificationservice.model.UserProfile
+import com.mpcs51205.notificationservice.model.*
 import com.mpcs51205.notificationservice.repository.UserProfileRepository
 import com.mpcs51205.notificationservice.repository.EmailRepository
 import org.springframework.dao.DataIntegrityViolationException
@@ -34,16 +32,24 @@ class NotificationService(
     }
 
     // update userProfile
-    //fun updateUserProfile(updateSrc: UserUpdate, targetId: UUID): User {
-    //    val target: User = getUserReference(targetId)
-    //    val updateEvent = updateSrc.update(user = target)
-    //    saveUser(user = target)
-    //    rabbitPublisher.sendUpdateEvent(userUpdateEvent = updateEvent)
-    //    return target
-
-    //}
+    fun updateUserProfile(userUpdateEvent: UserUpdateEvent): UserProfile {
+        println("updating user Profile")
+        val target: UserProfile = getUserProfileReference(userUpdateEvent.userId)
+        if (userUpdateEvent.update.email != null) {
+            println("Updating email to... " + userUpdateEvent.update.email!!)
+            target.email = userUpdateEvent.update.email!!
+        }
+        if (userUpdateEvent.update.name != null) {
+            println("Updating name to... " + userUpdateEvent.update.name!!)
+            target.name = userUpdateEvent.update.name!!
+        }
+        userProfileRepository.save(target)
+        return target
+    }
 
     fun deleteUserProfile(userId: UUID) = userProfileRepository.delete(getUserProfileReference(userId))
+
+    fun getUserProfiles(): MutableList<UserProfile> = userProfileRepository.findAll()
 
     private fun getUserProfileReference(userId: UUID): UserProfile = userProfileRepository.getReferenceById(userId)
 
@@ -74,4 +80,6 @@ class NotificationService(
     fun deleteEmail(emailId: UUID) = emailRepository.delete(getEmailReference(emailId))
 
     private fun getEmailReference(emailId: UUID): Email = emailRepository.getReferenceById(emailId)
+    fun getEmails(): MutableList<Email> = emailRepository.findAll()
+
 }

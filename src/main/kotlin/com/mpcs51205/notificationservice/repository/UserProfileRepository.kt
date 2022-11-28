@@ -7,5 +7,8 @@ import java.util.*
 
 @Repository
 interface UserProfileRepository: JpaRepository<UserProfile, UUID> {
-    fun getUserByEmail(email:String): UserProfile?
+    fun getUserProfileByEmail(email:String): UserProfile
+
+    fun getUserProfileById(id: UUID): UserProfile
+
 }
