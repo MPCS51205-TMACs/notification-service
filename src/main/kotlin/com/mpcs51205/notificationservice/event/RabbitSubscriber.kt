@@ -53,11 +53,11 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     @Value("\${spring.rabbitmq.template.exchange-watchlist-match}")
     lateinit var watchlistMatchExchange: String
 
-    //@Value("\${spring.rabbitmq.template.exchange-auction-startsoon}")
-    lateinit var auctionStartSoonExchange: "auction.start-soon"
+    @Value("\${spring.rabbitmq.template.exchange-auction-startsoon}")
+    lateinit var auctionStartSoonExchange: String
 
-    //@Value("\${spring.rabbitmq.template.exchange-auction-endsoon}")
-    lateinit var auctionEndSoonExchange: "auction.end-soon"
+    @Value("\${spring.rabbitmq.template.exchange-auction-endsoon}")
+    lateinit var auctionEndSoonExchange: String
 
     @Value("\${spring.rabbitmq.template.exchange-auction-new-high-bid}")
     lateinit var auctionNewHighBidExchange: String
