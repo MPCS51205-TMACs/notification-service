@@ -13,8 +13,8 @@ spring:
       exchange-user-update: user.update
       exchange-user-activation: user.activation
       exchange-watchlist-match: watchlist.match
-      exchange-auction-startsoon: auction.startsoon
-      exchange-auction-endsoon: auction.endsoon
+      exchange-auction-startsoon: auction.start-soon
+      exchange-auction-endsoon: auction.end-soon
       exchange-auction-new-high-bid: auction.new-high-bid
       exchange-auction-end: auction.end
     host: rabbitmq-server

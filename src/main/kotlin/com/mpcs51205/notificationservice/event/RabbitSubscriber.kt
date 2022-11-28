@@ -27,8 +27,8 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     exchange-user-update: user.update
     exchange-user-activation: user.activation
     exchange-watchlist-match: watchlist.match
-    exchange-auction-startstoon: auction.startsoon
-    exchange-auction-endsoon: auction.endsoon
+    exchange-auction-startstoon: auction.start-soon
+    exchange-auction-endsoon: auction.end-soon
     exchange-auction-end: auction.end
     exchange-auction-new-high-bid: auction.new-high-bid
      **/
@@ -36,7 +36,7 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     @Autowired
     lateinit var template: RabbitTemplate
 
-    var routingKey = "notification-service"
+    var routingKey = ""
 
     @Value("\${spring.rabbitmq.template.exchange-user-create}")
     lateinit var userCreateExchange: String
@@ -53,11 +53,11 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     @Value("\${spring.rabbitmq.template.exchange-watchlist-match}")
     lateinit var watchlistMatchExchange: String
 
-    @Value("\${spring.rabbitmq.template.exchange-auction-startsoon}")
-    lateinit var auctionStartSoonExchange: String
+    //@Value("\${spring.rabbitmq.template.exchange-auction-startsoon}")
+    lateinit var auctionStartSoonExchange: "auction.start-soon"
 
-    @Value("\${spring.rabbitmq.template.exchange-auction-endsoon}")
-    lateinit var auctionEndSoonExchange: String
+    //@Value("\${spring.rabbitmq.template.exchange-auction-endsoon}")
+    lateinit var auctionEndSoonExchange: "auction.end-soon"
 
     @Value("\${spring.rabbitmq.template.exchange-auction-new-high-bid}")
     lateinit var auctionNewHighBidExchange: String
@@ -112,22 +112,22 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     open fun userActivationBinding(): Binding = Binding(userActivationQueue().name, Binding.DestinationType.QUEUE, userActivationExchange().name, routingKey, null)
 
     @Bean
-    fun watchlistMatchQueue(): Queue = Queue("watchlist.match",true)
+    fun watchlistMatchQueue(): Queue = Queue("notification-service:watchlist.match",true)
     @Bean
     open fun watchlistMatchBinding(): Binding = Binding(watchlistMatchQueue().name, Binding.DestinationType.QUEUE, userActivationExchange().name, routingKey, null)
 
     @Bean
-    fun auctionStartSoonQueue(): Queue = Queue("auction.startsoon",true)
+    fun auctionStartSoonQueue(): Queue = Queue("notification-service:auction.start-soon",true)
     @Bean
     open fun auctionStartSoonBinding(): Binding = Binding(auctionStartSoonQueue().name, Binding.DestinationType.QUEUE, auctionStartSoonExchange().name, routingKey, null)
 
     @Bean
-    fun auctionEndSoonQueue(): Queue = Queue("auction.endsoon",true)
+    fun auctionEndSoonQueue(): Queue = Queue("notification-service:auction.end-soon",true)
     @Bean
     open fun auctionEndSoonBinding(): Binding = Binding(auctionEndSoonQueue().name, Binding.DestinationType.QUEUE, auctionEndSoonExchange().name, routingKey, null)
 
     @Bean
-    fun auctionNewHighBidQueue(): Queue = Queue("auction.new-high-bid",true)
+    fun auctionNewHighBidQueue(): Queue = Queue("notification-service:auction.new-high-bid",true)
     @Bean
     open fun auctionNewHighBidBinding(): Binding = Binding(auctionNewHighBidQueue().name, Binding.DestinationType.QUEUE, auctionNewHighBidExchange().name, routingKey, null)
 
@@ -174,7 +174,7 @@ class RabbitSubscriber(val notificationService: NotificationService) {
        // }
     }
 
-    @RabbitListener(queues = ["watchlist.match"])
+    @RabbitListener(queues = ["notification-service:watchlist.match"])
     fun receiveWatchlistMatch(watchlistMatch: WatchlistMatch) {
         println("Receiving watchlist Match")
         //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
@@ -183,7 +183,7 @@ class RabbitSubscriber(val notificationService: NotificationService) {
         // }
     }
 
-    @RabbitListener(queues = ["auction.startsoon"])
+    @RabbitListener(queues = ["notification-service:auction.start-soon"])
     fun receiveAuctionStartSoon(auctionStartSoon: AuctionStartOrEndSoon) {
         println("Receiving auction start soon")
         //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
@@ -192,7 +192,7 @@ class RabbitSubscriber(val notificationService: NotificationService) {
         // }
     }
 
-    @RabbitListener(queues = ["auction.endsoon"])
+    @RabbitListener(queues = ["notification-service:auction.end-soon"])
     fun receiveAuctionEndSoon(auctionEndSoon: AuctionStartOrEndSoon) {
         println("Receiving auction end soon")
         //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
@@ -201,7 +201,7 @@ class RabbitSubscriber(val notificationService: NotificationService) {
         // }
     }
 
-    @RabbitListener(queues = ["auction.new-high-bid"])
+    @RabbitListener(queues = ["notification-service:auction.new-high-bid"])
     fun receiveAuctionNewHighBid(auctionNewHighBid: AuctionNewHighBid) {
         println("Receiving auction new high bid")
         //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
