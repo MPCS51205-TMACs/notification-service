@@ -3,7 +3,7 @@ services:
     image: postgres
     container_name: postgres-notification
     ports:
-      - 5432:5432
+      - 5436:5432
     environment:
       POSTGRES_USER: notification-service
       POSTGRES_PASSWORD: notification-service
@@ -12,22 +12,22 @@ services:
       - my-application-network
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    container_name: rabbitmq-server
     restart: always
     ports:
+      - "5672:5672"                     # for message traffic
       - "15672:15672"
-      - "5672:5672"
     networks:
       - my-application-network
   notification-service: # NOTE: WILL FAIL IF CERTAIN EXCHANGES / QUEUES DONT EXIST
-    image: mpcs51205/notification-service:dockerTest16
+    image: maven/builder:notification-service
     container_name: notification-service
     ports:
-      - "8082:8080" # make sure LHS port unique
+      - "8083:8080" # make sure LHS port unique
     command: ""
     depends_on:
-      - rabbitmq
-      - postgres
+      - postgres-notification
+      - rabbitmq-server
     networks:
       - my-application-network
 
