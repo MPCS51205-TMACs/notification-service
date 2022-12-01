@@ -1,4 +1,4 @@
-package com.mpcs51205.notificationservice.model
+package com.mpcs51205.notificationservice.event
 
 import java.io.Serializable
 

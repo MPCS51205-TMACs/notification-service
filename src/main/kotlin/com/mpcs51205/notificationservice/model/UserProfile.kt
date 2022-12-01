@@ -1,6 +1,7 @@
 package com.mpcs51205.notificationservice.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.mpcs51205.notificationservice.event.UserCreate
 import java.io.Serializable
 import java.util.*
 import javax.persistence.*
@@ -37,7 +38,7 @@ class UserProfileUpdate: Serializable {
     var email: String? = null
     var receiveAlerts: Boolean? = null
 
-    fun update(userProfile: User) {
+    fun update(userProfile: UserCreate) {
         userProfile.name = this.name ?: userProfile.name
         userProfile.email = this.email ?: userProfile.email
 

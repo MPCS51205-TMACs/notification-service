@@ -1,9 +1,23 @@
-package com.mpcs51205.notificationservice.model
+package com.mpcs51205.notificationservice.event
 
 import java.io.Serializable
 import java.util.*
 
-class User: Serializable {
+class UserActivation: Serializable {
+    lateinit var userId: UUID
+    var active: Boolean = true
+}
+
+class UserDelete: Serializable {
+    lateinit var userId: UUID
+}
+
+class UserUpdateEvent: Serializable {
+    lateinit var userId: UUID
+    lateinit var update: UserUpdate
+}
+
+class UserCreate: Serializable {
     var id: UUID? = null
     var name: String? = null
     var email: String? = null
@@ -20,8 +34,4 @@ class UserUpdate: Serializable {
     var email: String? = null
     var isAdmin: Boolean? = null
     var paymentMethod: String? = null
-}
-class UserUpdateEvent: Serializable {
-    lateinit var userId: UUID
-    lateinit var update: UserUpdate
 }

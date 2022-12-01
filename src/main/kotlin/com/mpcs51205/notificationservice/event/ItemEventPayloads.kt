@@ -1,8 +1,10 @@
-package com.mpcs51205.notificationservice.model
+package com.mpcs51205.notificationservice.event
 
 import java.io.Serializable
 import java.util.*
 
+class ItemEventPayloads {
+}
 
 class Item: Serializable {
     var id: UUID? = null
@@ -19,4 +21,16 @@ class Item: Serializable {
     var inappropriate: Boolean = false
     var categories = mutableListOf<ItemCategory>()
     var bookmarks: List<ItemBookmark> = mutableListOf()
+}
+
+class ItemBookmark {
+    var bookmarkId: UUID? = null
+    var userBookmark: UUID? = null
+    lateinit var bookmarkedItem: Item
+}
+
+class ItemCategory(categoryName: String?): Serializable {
+    var id: UUID? = null
+    var categoryDescription: String? = categoryName
+    var items = mutableListOf<Item>()
 }
