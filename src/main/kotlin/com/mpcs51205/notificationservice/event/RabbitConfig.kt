@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
+import java.io.Serializable
+import java.util.*
 
 
 @Component
@@ -100,7 +102,7 @@ class RabbitConfig {
     @Bean
     fun watchlistMatchQueue(): Queue = Queue("notification-service:watchlist.match",true)
     @Bean
-    open fun watchlistMatchBinding(): Binding = Binding(watchlistMatchQueue().name, Binding.DestinationType.QUEUE, userActivationExchange().name, routingKey, null)
+    open fun watchlistMatchBinding(): Binding = Binding(watchlistMatchQueue().name, Binding.DestinationType.QUEUE, watchlistMatchExchange().name, routingKey, null)
 
     @Bean
     fun auctionStartSoonQueue(): Queue = Queue("notification-service:auction.start-soon",true)
@@ -139,6 +141,13 @@ class RabbitConfig {
     template.convertAndSend(exchange, routingKey, payload)
     }
      */
+    fun sendMatchEvent(userId: UUID, item: Item) = send(
+        exchange = watchlistMatchExchange().name,
+        payload = WatchlistMatch().apply { this.userId = userId; this.item = item})
+
+    private fun send(exchange: String, payload: Serializable) {
+        template.convertAndSend(exchange, "", payload)
+    }
 
 
 }

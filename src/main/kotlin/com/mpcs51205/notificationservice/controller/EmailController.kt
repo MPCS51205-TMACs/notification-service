@@ -8,6 +8,8 @@ import java.util.*
 @RestController
 @RequestMapping("/api/v1/notification")
 class EmailController (val emailService: EmailService) {
+    @PostMapping("/sendEvent")
+    fun sendWatchlistEvent() = emailService.sendEvents()
     @GetMapping("/email/{emailId}")
     fun getEmail(@PathVariable emailId: UUID): Email = emailService.getEmailById(emailId)
 

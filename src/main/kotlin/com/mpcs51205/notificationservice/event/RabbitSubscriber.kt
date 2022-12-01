@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class RabbitSubscriber(val userProfileService: UserProfileService, val emailService: EmailService) {
+    // #TODO: Add more informative logs
+    // #TODO: Test user activation/deactivate via suspend
+    //
     @RabbitListener(queues = ["notification-service:user.create"])
     fun receiveUserCreate(user: UserCreate) {
         println("Receiving message create")
@@ -37,55 +40,41 @@ class RabbitSubscriber(val userProfileService: UserProfileService, val emailServ
     fun receiveUserActivation(userActivation: UserActivation) {
         println("Receiving message user activate")
         userProfileService.updateUserProfileActivation(userActivation.userId, userActivation.active)
-        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
-        //if (userProfile != null) {
-        //    notificationService.createUserProfile(userProfile)
-       // }
     }
 
     @RabbitListener(queues = ["notification-service:watchlist.match"])
     fun receiveWatchlistMatch(watchlistMatch: WatchlistMatch) {
-        println("Receiving watchlist Match")
-        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
-        //if (userPfrofile != null) {
-        //    notificationService.createUserProfile(userProfile)
-        // }
+        println("Receiving watchlist match!")
+        // get the email of the userId in watchlistMatch
+        //emailService.sendWatchlistMatchEmail(watchlistMatch)
     }
 
     @RabbitListener(queues = ["notification-service:auction.start-soon"])
     fun receiveAuctionStartSoon(auctionStartSoon: AuctionStartOrEndSoon) {
         println("Receiving auction start soon")
-        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
-        //if (userProfile != null) {
-        //    notificationService.createUserProfile(userProfile)
-        // }
+        emailService.sendAuctionStartOrEndSoonEmail(auctionStartSoon)
     }
 
     @RabbitListener(queues = ["notification-service:auction.end-soon"])
     fun receiveAuctionEndSoon(auctionEndSoon: AuctionStartOrEndSoon) {
+        // "[2022-12-01 05:49:17.066733] Auction for item_id=100 was finalized (0.017854 minutes) ago!"
         println("Receiving auction end soon")
-        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
-        //if (userProfile != null) {
-        //    notificationService.createUserProfile(userProfile)
-        // }
+        emailService.sendAuctionStartOrEndSoonEmail(auctionEndSoon)
+
     }
 
     @RabbitListener(queues = ["notification-service:auction.new-high-bid"])
     fun receiveAuctionNewHighBid(auctionNewHighBid: AuctionNewHighBid) {
         println("Receiving auction new high bid")
-        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
-        //if (userProfile != null) {
-        //    notificationService.createUserProfile(userProfile)
-        // }
+        emailService.sendNewHighBidEmail(auctionNewHighBid)
+
     }
 
     @RabbitListener(queues = ["notification-service:auction.end"])
     fun receiveAuctionEnd(auction: AuctionEnd) {
         println("Receiving auction end")
-        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
-        //if (userProfile != null) {
-        //    notificationService.createUserProfile(userProfile)
-        // }
+        emailService.sendAuctionEndEmail(auction)
+
     }
 
 

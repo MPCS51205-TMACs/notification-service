@@ -7,7 +7,9 @@ class ItemEventPayloads {
 }
 
 class Item: Serializable {
+    var startPrice: Double? = null
     var id: UUID? = null
+    var userId: UUID? = null
     var userEmail: String? = null
     lateinit var description: String
     var quantity: Int = 0

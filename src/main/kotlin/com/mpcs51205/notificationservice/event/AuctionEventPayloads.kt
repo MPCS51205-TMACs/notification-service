@@ -1,6 +1,7 @@
 package com.mpcs51205.notificationservice.event
 
 import java.io.Serializable
+import java.util.*
 
 class AuctionEventPayloads {
 }
@@ -41,10 +42,8 @@ class AuctionNewHighBid: Serializable {
 }
 
 class AuctionStartOrEndSoon: Serializable {
-    lateinit var itemid: String
-    lateinit var selleruserid: String
-    lateinit var starttime: String
-    lateinit var endtime: String
-    var startpriceincents: Int? = 0
-    var TopBid: AuctionBid? = null
+    lateinit var item_id: String
+    lateinit var start_time: String
+    lateinit var end_time: String
+    lateinit var message: String
 }

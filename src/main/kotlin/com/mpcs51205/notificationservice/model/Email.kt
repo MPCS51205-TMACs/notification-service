@@ -23,7 +23,6 @@ import javax.persistence.*
  */
 
 @Entity
-// add another index?
 @Table(indexes = [Index(columnList = "receiverEmail")])
 class Email: Serializable {
     @Id

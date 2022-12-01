@@ -9,10 +9,10 @@ import javax.persistence.*
 
 @Entity
 @Table(indexes = [Index(columnList = "id")])
-class UserProfile: Serializable {
+class UserProfile(): Serializable {
     @Id
     @Column(nullable = false)
-    var id: UUID
+    lateinit var id: UUID
 
     @Column(nullable = false)
     lateinit var name: String
@@ -23,7 +23,7 @@ class UserProfile: Serializable {
     @Column
     var receiveAlerts: Boolean = true
 
-    constructor(id: UUID, name: String, email: String) {
+    constructor(id: UUID, name: String, email: String) : this() {
         this.id = id
         this.name = name
         this.email = email
