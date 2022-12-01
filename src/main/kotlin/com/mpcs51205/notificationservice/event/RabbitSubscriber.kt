@@ -149,12 +149,9 @@ class RabbitSubscriber(val notificationService: NotificationService) {
     }
 
     @RabbitListener(queues = ["notification-service:user.delete"])
-    fun receiveUserDelete(user: User) {
+    fun receiveUserDelete(userId: UUID) {
         println("Receiving message user delete")
-        //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
-        //if (userProfile != null) {
-        //    notificationService.createUserProfile(userProfile)
-        //}
+        notificationService.deleteUserProfile(userId)
     }
 
     @RabbitListener(queues = ["notification-service:user.update"])
@@ -165,8 +162,9 @@ class RabbitSubscriber(val notificationService: NotificationService) {
 
     // add other events here
     @RabbitListener(queues = ["notification-service:user.activation"])
-    fun receiveUserActivation(user: User) {
+    fun receiveUserActivation(userId: UUID, active: Boolean) {
         println("Receiving message user activate")
+        notificationService.updateUserProfileActivation(userId, active)
         //val userProfile = user.id?.let { UserProfile(it, user.name, user.email) }
         //if (userProfile != null) {
         //    notificationService.createUserProfile(userProfile)

@@ -47,6 +47,20 @@ class NotificationService(
         return target
     }
 
+    fun updateUserProfileActivation(userId: UUID, active: Boolean): UserProfile {
+        println("updating user Profile activation status for user " + userId)
+        val target: UserProfile = getUserProfileReference(userId)
+        if (active) {
+            println("Activating user" + userId)
+            target.receiveAlerts = true
+        } else {
+            target.receiveAlerts = false
+        }
+        userProfileRepository.save(target)
+        return target
+    }
+
+
     fun deleteUserProfile(userId: UUID) = userProfileRepository.delete(getUserProfileReference(userId))
 
     fun getUserProfiles(): MutableList<UserProfile> = userProfileRepository.findAll()
