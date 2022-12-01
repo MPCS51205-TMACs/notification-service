@@ -5,4 +5,4 @@ WORKDIR /build
 COPY ./pom.xml /build
 COPY ./src /build
 
-RUN mvn package
+RUN mvn dependency:resolve && mvn compile
