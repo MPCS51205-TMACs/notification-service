@@ -45,16 +45,8 @@ class EmailService(
 
     fun sendWatchlistMatchEmail(watchlistMatch: WatchlistMatch) {
         // get the profile of the user id provided
-        var userProfile = UserProfile()
-        try {
-            //userProfile = userProfileRepository.getUserProfileById(watchlistMatch.userId)
-            //userProfile.email
-        } catch (e: Exception) {
-            println("NOT FOUND: Can't find user with id:" + watchlistMatch.userId)
-        }
 
         var email = Email()
-        //email.id?.let { emailRepository.getReferenceById(it) }
 
         email.sentDate = LocalDateTime.now()
         email.senderId = watchlistMatch.userId
@@ -67,13 +59,12 @@ class EmailService(
         email.body = "Hello, " + email.receiverName + "recently added Item" + watchlistMatch.item.description + " matches your watchlist!"
         email.subject = "An Item Matches Your Watchlist!"
 
-        //email.id?.let { emailRepository.getReferenceById(it) }
-        //emailRepository.save(email)
+        emailRepository.save(email)
     }
 
     fun sendNewHighBidEmail(newHighBid: AuctionNewHighBid) {
+        // GET the users to send to
         var email = Email()
-        //email.id?.let { emailRepository.getReferenceById(it) }
         email.sentDate = LocalDateTime.now()
         email.senderId = UUID.fromString("874555dc-7974-4229-ba03-6b000275fca2")
         email.receiverId = UUID.fromString("874555dc-7974-4229-ba03-6b000275fca2")
@@ -81,14 +72,16 @@ class EmailService(
         email.receiverName = "Your name"
         email.senderEmail = "alerts@webay.com"
         email.receiverEmail = "email"
-        email.templateType = "new high bid"
-        email.body = "New High Bid email"
-        email.subject = "New High Bid Email"
+        email.templateType = "new-high-bid"
+        email.body = "New High Bid Alert"
+        email.subject = "New High Bid Alert!"
+
+        email = emailRepository.save(email)
     }
 
     fun sendAuctionStartOrEndSoonEmail(auctionStartOrEndSoon: AuctionStartOrEndSoon) {
+        // Get the users to send to
         var email = Email()
-        //email.id?.let { emailRepository.getReferenceById(it) }
         email.sentDate = LocalDateTime.now()
         email.senderId = UUID.fromString("874555dc-7974-4229-ba03-6b000275fca2")
         email.receiverId = UUID.fromString("874555dc-7974-4229-ba03-6b000275fca2")
@@ -96,15 +89,17 @@ class EmailService(
         email.receiverName = "Your name"
         email.senderEmail = "alerts@webay.com"
         email.receiverEmail = "email"
-        email.templateType = "auctionAlert"
+        email.templateType = "auction-start-or-end"
         email.body = "Auction Alert- start or end soon"
         email.subject = "Auction Alert - start or end soon"
+
+        email = emailRepository.save(email)
     }
 
-    fun sendAuctionEndEmail(auctionEnd: AuctionEnd): Email {
+    fun sendAuctionEndEmail(auctionEnd: AuctionEnd) {
         println("Sending auction end email now")
+        // get the user to send to
         var email = Email()
-        //email.id?.let { emailRepository.getReferenceById(it) }
         email.sentDate = LocalDateTime.now()
         email.senderId = UUID.fromString("874555dc-7974-4229-ba03-6b000275fca2")
         email.receiverId = UUID.fromString("874555dc-7974-4229-ba03-6b000275fca2")
@@ -112,14 +107,17 @@ class EmailService(
         email.receiverName = "Your name"
         email.senderEmail = "alerts@webay.com"
         email.receiverEmail = "email"
-        email.templateType = "watchlist"
-        email.body = "Auction end alert"
-        email.subject = "Auction end alert"
+        email.templateType = "auction-end"
+        email.body = "Auction end alert!"
+        email.subject = "Auction end alert!"
 
-        email = emailRepository.save(email)
-        println(email.body)
-        return email
+        emailRepository.save(email)
+        return
     }
+
+    /**
+     * FOR TESTING ONLY
+     */
     fun sendWatchlistEvent() {
         var item = Item()
         item.id = UUID.fromString("874555dc-7974-4229-ba03-6b000275fca2")
