@@ -45,6 +45,7 @@ class EmailService(
 
     fun sendWatchlistMatchEmail(watchlistMatch: WatchlistMatch) {
         // get the profile of the user id provided
+        println("SENDING WATCHLIST MATCH EMAIL")
 
         var email = Email()
 
@@ -63,6 +64,8 @@ class EmailService(
     }
 
     fun sendNewHighBidEmail(newHighBid: AuctionNewHighBid) {
+        println("SENDING NEW HIGH BID EMAIL: " + newHighBid)
+
         // GET the users to send to
         var email = Email()
         email.sentDate = LocalDateTime.now()
@@ -80,6 +83,7 @@ class EmailService(
     }
 
     fun sendAuctionStartOrEndSoonEmail(auctionStartOrEndSoon: AuctionStartOrEndSoon) {
+        println("SENDING AUCTION START OR END SOON EMAIL: " + auctionStartOrEndSoon)
         // Get the users to send to
         var email = Email()
         email.sentDate = LocalDateTime.now()
@@ -88,29 +92,27 @@ class EmailService(
         email.senderName = "Admin"
         email.receiverName = "Your name"
         email.senderEmail = "alerts@webay.com"
-        email.receiverEmail = "email"
+        email.receiverEmail = "user@gmail.com"
         email.templateType = "auction-start-or-end"
-        email.body = "Auction Alert- start or end soon"
-        email.subject = "Auction Alert - start or end soon"
+        email.body = "** AUCTION ALERT ** Hello, Webay would like to notify you that an auction is starting or ending soon. See link for more details."
+        email.subject = "** AUCTION ALERT **"
 
         email = emailRepository.save(email)
     }
 
     fun sendAuctionEndEmail(auctionEnd: AuctionEnd) {
-        println("Sending auction end email now")
-        // get the user to send to
+        println("SENDING AUCTION END EMAIL: " + auctionEnd)
         var email = Email()
         email.sentDate = LocalDateTime.now()
         email.senderId = UUID.fromString("874555dc-7974-4229-ba03-6b000275fca2")
         email.receiverId = UUID.fromString("874555dc-7974-4229-ba03-6b000275fca2")
         email.senderName = "Admin"
-        email.receiverName = "Your name"
+        email.receiverName = "User Name"
         email.senderEmail = "alerts@webay.com"
-        email.receiverEmail = "email"
+        email.receiverEmail = "user@webay.com"
         email.templateType = "auction-end"
-        email.body = "Auction end alert!"
-        email.subject = "Auction end alert!"
-
+        email.body = "** AUCTION ENDING ** Hello, Webay would like to notify you that an auction is ending soon. See link for more details."
+        email.subject = "** AUCTION ENDING **"
         emailRepository.save(email)
         return
     }
